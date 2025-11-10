@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anton Chen - Digitale Visitenkarte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        .visitenkarte {
+            background: rgba(25, 25, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .visitenkarte::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(120, 119, 198, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .visitenkarte::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.02), transparent);
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-10px, -10px) rotate(180deg); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .name {
+            font-size: 2.4em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #a8b2d1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .title {
+            font-size: 1.1em;
+            color: #7877c6;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .slogan {
+            font-size: 1.05em;
+            color: #b0b0b0;
+            font-style: italic;
+            margin-bottom: 40px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border-left: 3px solid #7877c6;
+            line-height: 1.5;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        .kontakt-info {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .kontakt-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .kontakt-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(120, 119, 198, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .kontakt-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #7877c6 0%, #5a58a8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+            box-shadow: 0 4px 15px rgba(120, 119, 198, 0.3);
+        }
+
+        .kontakt-text {
+            flex: 1;
+        }
+
+        .kontakt-label {
+            font-size: 0.85em;
+            color: #8a8a8a;
+            margin-bottom: 4px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .kontakt-value {
+            font-size: 1em;
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        .protected {
+            color: #ff6b6b;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .protected::after {
+            content: '🔒 Klicken zum Anzeigen';
+            font-size: 0.75em;
+            color: #666;
+            margin-left: 10px;
+            opacity: 0.7;
+        }
+
+        .protected:hover {
+            color: #ff5252;
+        }
+
+        .security-notice {
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
+            z-index: 2;
+        }
+
+        .website-link {
+            text-align: center;
+            margin-top: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .website-url {
+            color: #7877c6;
+            font-size: 0.9em;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .website-url:hover {
+            background: rgba(120, 119, 198, 0.1);
+            border-color: #7877c6;
+        }
+
+        /* Elegante Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #7877c6;
+            border-radius: 4px;
+        }
+
+        /* Glow Effekt für besondere Elemente */
+        .glow {
+            text-shadow: 0 0 20px rgba(120, 119, 198, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .visitenkarte {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+            
+            .name {
+                font-size: 2em;
+            }
+            
+            .kontakt-item {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="visitenkarte">
+        <div class="header">
+            <h1 class="name">Anton Chen</h1>
+            <div class="title">Software Engineer & Tech Innovator</div>
+        </div>
+        
+        <div class="slogan">"Transforming complex challenges into elegant digital solutions through cutting-edge technology and innovative thinking."</div>
+        
+        <div class="kontakt-info">
+            <div class="kontakt-item">
+                <div class="kontakt-icon">📱</div>
+                <div class="kontakt-text">
+                    <div class="kontakt-label">Handynummer</div>
+                    <div class="kontakt-value protected" onclick="revealInfo(this, '+49 157 12345678')">•••••••••••</div>
+                </div>
+            </div>
+            
+            <div class="kontakt-item">
+                <div class="kontakt-icon">✉️</div>
+                <div class="kontakt-text">
+                    <div class="kontakt-label">Privat</div>
+                    <div class="kontakt-value protected" onclick="revealInfo(this, 'anton.chen@email.de')">•••••••••••</div>
+                </div>
+            </div>
+            
+            <div class="kontakt-item">
+                <div class="kontakt-icon">💼</div>
+                <div class="kontakt-text">
+                    <div class="kontakt-label">Geschäftlich</div>
+                    <div class="kontakt-value protected" onclick="revealInfo(this, 'a.chen@tech-company.de')">•••••••••••</div>
+                </div>
+            </div>
+            
+            <div class="kontakt-item">
+                <div class="kontakt-icon">🎓</div>
+                <div class="kontakt-text">
+                    <div class="kontakt-label">Universität</div>
+                    <div class="kontakt-value protected" onclick="revealInfo(this, 'anton.chen@campus-university.de')">•••••••••••</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="website-link">
+            <a href="https://antonchen456.github.io/visitenkarte" class="website-url" target="_blank">
+                https://antonchen456.github.io/visitenkarte
+            </a>
+        </div>
+        
+        <div class="security-notice">
+            🔒 Sensible Daten sind geschützt. Klicken Sie zum Anzeigen.
+        </div>
+    </div>
+
+    <script>
+        // Persönliche Daten - Hier anpassen!
+        const personalData = {
+            fullName: "Anton Chen",
+            jobTitle: "Software Engineer & Tech Innovator",
+            slogan: "Transforming complex challenges into elegant digital solutions through cutting-edge technology and innovative thinking.",
+            handynummer: "+49 157 12345678",
+            mailPrivat: "anton.chen@email.de",
+            mailGeschaeftlich: "a.chen@tech-company.de",
+            mailUni: "anton.chen@campus-university.de"
+        };
+
+        // Visitenkarte initialisieren
+        function initVisitenkarte() {
+            document.querySelector('.name').textContent = personalData.fullName;
+            document.querySelector('.title').textContent = personalData.jobTitle;
+            document.querySelector('.slogan').textContent = personalData.slogan;
+        }
+
+        // Geschützte Informationen anzeigen
+        function revealInfo(element, realValue) {
+            if (element.textContent === realValue) {
+                return;
+            }
+            
+            const originalText = element.textContent;
+            element.textContent = realValue;
+            element.style.color = '#ffffff';
+            element.style.fontWeight = '600';
+            element.classList.remove('protected');
+            
+            // Automatisches Verstecken nach 30 Sekunden
+            setTimeout(() => {
+                if (element.textContent === realValue) {
+                    element.textContent = '•••••••••••';
+                    element.style.color = '#ff6b6b';
+                    element.style.fontWeight = '';
+                    element.classList.add('protected');
+                }
+            }, 30000);
+        }
+
+        // Zusätzliche Sicherheitsmaßnahmen
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+                e.preventDefault();
+            }
+        });
+
+        // Elegante Mouse Move Interaktion
+        document.addEventListener('mousemove', function(e) {
+            const card = document.querySelector('.visitenkarte');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            card.style.transform = `perspective(1000px) rotateX(${(y - 0.5) * 2}deg) rotateY(${(x - 0.5) * 4}deg)`;
+        });
+
+        document.addEventListener('mouseleave', function() {
+            const card = document.querySelector('.visitenkarte');
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+
+        // Visitenkarte starten
+        window.onload = initVisitenkarte;
+    </script>
+</body>
+</html>
